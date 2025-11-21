@@ -7,89 +7,115 @@
 <BorderPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sample.controller.TodoController"
-            prefHeight="400.0" prefWidth="600.0">
+            prefHeight="400.0" prefWidth="800.0">
 
     <!-- TOP MENU BAR -->
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
+
+                <!-- FILE MENU -->
                 <Menu text="File">
                     <items>
-                        <MenuItem text="Close"/>
+                        <MenuItem text="Open..."    onAction="#openFile"/>
+                        <MenuItem text="Save"       onAction="#saveFile"/>
+                        <MenuItem text="Save As..." onAction="#saveFileAs"/>
+                        <MenuItem text="Export to PDF" onAction="#exportPDF"/>
+                        <SeparatorMenuItem/>
+                        <MenuItem text="Close" onAction="#closeApp"/>
                     </items>
                 </Menu>
-                <Menu text="Edit">
-                    <items>
-                        <MenuItem text="Delete"/>
-                    </items>
-                </Menu>
+
+                <!-- HELP MENU -->
                 <Menu text="Help">
                     <items>
-                        <MenuItem text="About"/>
+                        <MenuItem text="About Us" onAction="#showAbout"/>
+                        <MenuItem text="Details / User Guide" onAction="#showDetails"/>
                     </items>
                 </Menu>
+
             </menus>
         </MenuBar>
     </top>
 
     <!-- CENTER TABLE -->
     <center>
-        <TableView fx:id="taskTable" prefHeight="200.0" prefWidth="200.0"
+        <TableView fx:id="taskTable"
+                   prefHeight="200.0"
+                   prefWidth="600.0"
                    BorderPane.alignment="CENTER">
 
             <columns>
-                <TableColumn fx:id="titleCol" prefWidth="120" text="Title"/>
-                <TableColumn fx:id="categoryCol" prefWidth="120" text="Category"/>
-                <TableColumn fx:id="priorityCol" prefWidth="120" text="Priority"/>
-                <TableColumn fx:id="dateCol" prefWidth="120" text="Due Date"/>
+                <TableColumn fx:id="titleColumn" text="Title" prefWidth="150.0" />
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="120.0" />
+                <TableColumn fx:id="priorityColumn" text="Priority" prefWidth="80.0" />
+                <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="110.0" />
+                <TableColumn fx:id="descriptionColumn" text="Details" prefWidth="250.0" />
+                <TableColumn fx:id="completedColumn" text="Status" prefWidth="90.0" />
             </columns>
+
         </TableView>
     </center>
 
     <!-- RIGHT SIDE FORM -->
     <right>
-        <VBox spacing="10" prefWidth="200" BorderPane.alignment="CENTER">
+        <VBox spacing="10" prefWidth="220" BorderPane.alignment="CENTER">
             <padding>
                 <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
             </padding>
+
             <children>
                 <Label text="Task Form"/>
+
                 <TextField fx:id="titleField" promptText="Enter title..."/>
-                <TextArea fx:id="descField" prefHeight="120"/>
+
+                <TextArea fx:id="descField"
+                          prefHeight="120"
+                          promptText="Enter task details..."/>
 
                 <DatePicker fx:id="datePicker"/>
-                <ComboBox fx:id="categoryBox" prefWidth="150"/>
-                <ComboBox fx:id="priorityBox" prefWidth="150"/>
 
-                <CheckBox fx:id="completedCheck" text="Completed"/>
+                <ComboBox fx:id="categoryBox" promptText="Select category"/>
+
+                <ComboBox fx:id="priorityBox" promptText="Select priority"/>
 
                 <HBox spacing="10">
                     <children>
                         <Button text="Add" onAction="#addTask"/>
                         <Button text="Update" onAction="#updateTask"/>
+                    </children>
+                </HBox>
+
+                <HBox spacing="10">
+                    <children>
                         <Button text="Delete" onAction="#deleteTask"/>
                         <Button text="Mark Completed" onAction="#markCompleted"/>
                     </children>
                 </HBox>
+
             </children>
         </VBox>
     </right>
 
-
-    <!-- BOTTOM SEARCH-->
+    <!-- BOTTOM SEARCH + FILTER -->
     <bottom>
         <HBox spacing="10" BorderPane.alignment="CENTER">
             <padding>
-                <Insets top="10.0" bottom="10.0" left="10.0" right="10.0" />
+                <Insets top="10.0" bottom="10.0" left="10.0" right="10.0"/>
             </padding>
+
             <children>
                 <TextField fx:id="searchField" promptText="Search tasks..." />
-                <ComboBox fx:id="filterCategoryBox" prefWidth="150.0" />
-                <Button text="Search" onAction="#searchTasks" />
-                <Button text="Filter" onAction="#filterCategory" />
+
+                <ComboBox fx:id="filterCategoryBox"
+                          prefWidth="150.0"
+                          promptText="Filter category"/>
+
+                <Button text="Search" onAction="#searchTasks"/>
+                <Button text="Filter" onAction="#filterCategory"/>
             </children>
+
         </HBox>
     </bottom>
-
 
 </BorderPane>

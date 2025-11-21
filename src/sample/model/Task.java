@@ -3,6 +3,7 @@ package sample.model;
 import java.time.LocalDate;
 
 public class Task {
+
     private String title;
     private String description;
     private LocalDate dueDate;
@@ -10,8 +11,9 @@ public class Task {
     private String priority;
     private boolean completed;
 
-    public Task(String title, String description, LocalDate dueDate,
-                String category, String priority, boolean completed) {
+    public Task() {}
+
+    public Task(String title, String description, LocalDate dueDate, String category, String priority, boolean completed) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -21,16 +23,20 @@ public class Task {
     }
 
     public String getTitle() { return title; }
-    public String getDescription() { return description; }
-    public LocalDate getDueDate() { return dueDate; }
-    public String getCategory() { return category; }
-    public String getPriority() { return priority; }
-    public boolean isCompleted() { return completed; }
+    public void setTitle(String title) { this.title = title; }
 
-    public void setTitle(String s) { title = s; }
-    public void setDescription(String s) { description = s; }
-    public void setDueDate(LocalDate d) { dueDate = d; }
-    public void setCategory(String s) { category = s; }
-    public void setPriority(String s) { priority = s; }
-    public void setCompleted(boolean c) { completed = c; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public LocalDate getDueDate() { return dueDate; }
+    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public String getPriority() { return priority; }
+    public void setPriority(String priority) { this.priority = priority; }
+
+    public boolean isCompleted() { return completed; }
+    public void setCompleted(boolean completed) { this.completed = completed; }
 }

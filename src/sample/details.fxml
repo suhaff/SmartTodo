@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sample.controller.DetailsController"
+            prefWidth="600.0" prefHeight="420.0">
+
+    <center>
+        <VBox spacing="10" alignment="TOP_LEFT">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+
+            <children>
+                <Label text="Details / User Guide" style="-fx-font-size:16px;-fx-font-weight:bold;"/>
+                <TextArea fx:id="detailsText" wrapText="true" editable="false" prefHeight="360" />
+            </children>
+        </VBox>
+    </center>
+
+</BorderPane>
