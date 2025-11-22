@@ -1,0 +1,124 @@
+/* ==============================================
+   DARK THEME
+   ============================================== */
+
+/* -------- GLOBAL -------- */
+.root {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #eaeaea;
+}
+
+.label {
+    -fx-text-fill: #eaeaea;
+}
+
+/* -------- MENUBAR -------- */
+.menu-bar {
+    -fx-background-color: #2b2b2b;
+}
+
+.menu, .menu-item, .menu .label, .menu-item .label {
+    -fx-text-fill: #eaeaea;
+}
+
+.context-menu {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: white;
+}
+
+/* -------- TABLE + GRID -------- */
+.table-view {
+    -fx-background-color: #1e1e1e;
+    -fx-control-inner-background: #1e1e1e;
+    -fx-control-inner-background-alt: #242424;
+    -fx-table-cell-border-color: #333;
+    -fx-border-color: #383838;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #2c2c2c;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: #2c2c2c;
+    -fx-border-color: #3c3c3c;
+    -fx-text-fill: white;
+}
+
+.table-row-cell {
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: #333333;
+    -fx-text-fill: #e0e0e0;
+}
+
+.table-row-cell:filled:even {
+    -fx-background-color: #1e1e1e;
+}
+
+.table-row-cell:filled:odd {
+    -fx-background-color: #232323;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #0a84ff;
+    -fx-text-fill: white;
+}
+
+/* -------- SCROLLBARS -------- */
+.scroll-bar .thumb {
+    -fx-background-color: #3c3c3c;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #555;
+}
+
+/* -------- BUTTONS -------- */
+.button {
+    -fx-background-color: #0a84ff;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+.button:hover {
+    -fx-background-color: #006edc;
+}
+
+.button:pressed {
+    -fx-background-color: #0055b3;
+}
+
+/* -------- INPUTS -------- */
+.text-field, .text-area, .date-picker .text-field {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: white;
+    -fx-border-color: #3c3c3c;
+}
+
+.text-area .content {
+    -fx-background-color: #2b2b2b;
+}
+
+/* -------- COMBOBOX -------- */
+.combo-box, .combo-box-base {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #3c3c3c;
+    -fx-text-fill: white;
+}
+
+/* -------- CHECKBOX (iOS style) -------- */
+.check-box .box {
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: #0a84ff;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-padding: 0.25em;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #0a84ff;
+}
+
+.check-box:selected .box {
+    -fx-background-color: white; /* white fill */
+}

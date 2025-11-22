@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -28,12 +27,14 @@ public class TodoController {
 
     @FXML private TableView<Task> taskTable;
 
+    @FXML private TableColumn<Task, Boolean> checkColumn;
+    @FXML private TableColumn<Task, String> statusColumn;
+
     @FXML private TableColumn<Task, String> titleColumn;
     @FXML private TableColumn<Task, String> categoryColumn;
     @FXML private TableColumn<Task, String> priorityColumn;
     @FXML private TableColumn<Task, LocalDate> dueDateColumn;
     @FXML private TableColumn<Task, String> descriptionColumn;
-    @FXML private TableColumn<Task, String> completedColumn;  // NEW COLUMN
 
     @FXML private TextField titleField;
     @FXML private TextArea descField;
@@ -44,57 +45,48 @@ public class TodoController {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> filterCategoryBox;
 
-    // track the currently opened file (null = default tasks.json)
     private File currentFile = null;
-
     private final ObservableList<Task> taskList = FXCollections.observableArrayList();
 
-    // Gson for reading/writing arbitrary files
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class,
-                    (com.google.gson.JsonSerializer<LocalDate>) (src, type, context) ->
+                    (com.google.gson.JsonSerializer<LocalDate>) (src, type, ctx) ->
                             new com.google.gson.JsonPrimitive(src.toString()))
             .registerTypeAdapter(LocalDate.class,
-                    (com.google.gson.JsonDeserializer<LocalDate>) (json, type, context) ->
+                    (com.google.gson.JsonDeserializer<LocalDate>) (json, type, ctx) ->
                             LocalDate.parse(json.getAsString()))
             .setPrettyPrinting()
             .create();
 
     @FXML
     public void initialize() {
-
-        // LOAD DATA (from Storage default tasks.json)
+        // load saved tasks into the table
         taskList.addAll(Storage.loadTasks());
         taskTable.setItems(taskList);
 
-        // Bind columns
+        // Bind columns to Task properties
         titleColumn.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getTitle()));
         categoryColumn.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategory()));
         priorityColumn.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getPriority()));
         dueDateColumn.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getDueDate()));
         descriptionColumn.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescription()));
 
-        // Completed column binding: Completed / Incomplete
-        completedColumn.setCellValueFactory(c ->
+        // status column: Completed / Incomplete
+        statusColumn.setCellValueFactory(c ->
                 new javafx.beans.property.SimpleStringProperty(
                         c.getValue().isCompleted() ? "Completed" : "Incomplete"
                 )
         );
 
-        // Populate combo boxes
-        categoryBox.setItems(FXCollections.observableArrayList(
-                "School", "Work", "Personal", "Shopping", "Health"
-        ));
+        // checkColumn uses default square CheckBox
+        setupCheckColumn();
 
-        priorityBox.setItems(FXCollections.observableArrayList(
-                "High", "Medium", "Low"
-        ));
+        // populate combo boxes
+        categoryBox.setItems(FXCollections.observableArrayList("School", "Work", "Personal", "Shopping", "Health"));
+        priorityBox.setItems(FXCollections.observableArrayList("High", "Medium", "Low"));
+        filterCategoryBox.setItems(FXCollections.observableArrayList("School", "Work", "Personal", "Shopping", "Health"));
 
-        filterCategoryBox.setItems(FXCollections.observableArrayList(
-                "School", "Work", "Personal", "Shopping", "Health"
-        ));
-
-        // Load selection into form
+        // populate form when selecting a row
         taskTable.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
             if (selected != null) {
                 titleField.setText(selected.getTitle());
@@ -106,8 +98,43 @@ public class TodoController {
         });
     }
 
-    // ----------------- CRUD -----------------
+    private void setupCheckColumn() {
 
+        checkColumn.setCellValueFactory(param ->
+                new javafx.beans.property.SimpleBooleanProperty(param.getValue().isCompleted())
+        );
+
+        checkColumn.setCellFactory(col -> new TableCell<Task, Boolean>() {
+
+            private final CheckBox checkBox = new CheckBox();
+
+            {
+                // default behavior (square checkbox)
+                checkBox.setOnAction(event -> {
+                    int idx = getIndex();
+                    if (idx < 0 || idx >= getTableView().getItems().size()) return;
+                    Task task = getTableView().getItems().get(idx);
+                    task.setCompleted(checkBox.isSelected());
+                    saveToCurrentOrDefault();
+                    taskTable.refresh();
+                });
+            }
+
+            @Override
+            protected void updateItem(Boolean value, boolean empty) {
+                super.updateItem(value, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    checkBox.setSelected(value != null && value);
+                    setGraphic(checkBox);
+                }
+            }
+        });
+    }
+
+    // CRUD
     @FXML
     private void addTask() {
         Task task = new Task(
@@ -116,11 +143,11 @@ public class TodoController {
                 datePicker.getValue(),
                 categoryBox.getValue(),
                 priorityBox.getValue(),
-                false  // Always start incomplete
+                false // new tasks start incomplete
         );
 
         taskList.add(task);
-        saveToCurrentOrDefault(); // persist
+        saveToCurrentOrDefault();
         clearForm();
     }
 
@@ -135,7 +162,6 @@ public class TodoController {
         selected.setCategory(categoryBox.getValue());
         selected.setPriority(priorityBox.getValue());
 
-        // Do NOT change completed status here
         taskTable.refresh();
         saveToCurrentOrDefault();
     }
@@ -156,68 +182,60 @@ public class TodoController {
         if (selected == null) return;
 
         selected.setCompleted(true);
-        taskTable.refresh();
         saveToCurrentOrDefault();
+        taskTable.refresh();
     }
 
-    // ----------------- Search & Filter -----------------
-
+    // Search / Filter
     @FXML
     private void searchTasks() {
-        String keyword = (searchField.getText() == null) ? "" : searchField.getText().toLowerCase();
+        String keyword = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
 
         if (keyword.isEmpty()) {
             taskTable.setItems(taskList);
             return;
         }
 
-        ObservableList<Task> filtered = taskList.filtered(
+        taskTable.setItems(taskList.filtered(
                 t -> (t.getTitle() != null && t.getTitle().toLowerCase().contains(keyword)) ||
                      (t.getDescription() != null && t.getDescription().toLowerCase().contains(keyword))
-        );
-
-        taskTable.setItems(filtered);
+        ));
     }
 
     @FXML
     private void filterCategory() {
         String category = filterCategoryBox.getValue();
+
         if (category == null || category.isEmpty()) {
             taskTable.setItems(taskList);
             return;
         }
 
-        ObservableList<Task> filtered = taskList.filtered(
-                t -> category.equals(t.getCategory())
-        );
-
-        taskTable.setItems(filtered);
+        taskTable.setItems(taskList.filtered(t -> category.equals(t.getCategory())));
     }
 
-    // ----------------- File operations -----------------
-
+    // File handling
     @FXML
     private void openFile() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open tasks file");
-        chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("JSON files", "*.json"),
-                new FileChooser.ExtensionFilter("All files", "*.*")
-        );
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files", "*.json"));
 
-        // optional: start at project folder or last known path
         File selected = chooser.showOpenDialog(getStage());
         if (selected == null) return;
 
         try (FileReader reader = new FileReader(selected)) {
             Type listType = new TypeToken<List<Task>>(){}.getType();
             List<Task> loaded = gson.fromJson(reader, listType);
+
             taskList.clear();
             if (loaded != null) taskList.addAll(loaded);
-            taskTable.setItems(taskList);
+
             currentFile = selected;
+            taskTable.setItems(taskList);
+
         } catch (Exception e) {
-            showError("Open failed", "Could not open file:\n" + e.getMessage());
+            showError("Open failed", e.getMessage());
         }
     }
 
@@ -225,118 +243,84 @@ public class TodoController {
     private void saveFile() {
         if (currentFile == null) {
             saveFileAs();
-            return;
+        } else {
+            writeTasksToFile(currentFile);
         }
-        writeTasksToFile(currentFile);
     }
 
     @FXML
     private void saveFileAs() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Save tasks as");
-        chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("JSON files", "*.json"),
-                new FileChooser.ExtensionFilter("All files", "*.*")
-        );
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files", "*.json"));
 
         File selected = chooser.showSaveDialog(getStage());
         if (selected == null) return;
 
-        // ensure extension if user didn't type .json
         if (!selected.getName().toLowerCase().endsWith(".json")) {
             selected = new File(selected.getAbsolutePath() + ".json");
         }
 
         currentFile = selected;
-        writeTasksToFile(currentFile);
+        writeTasksToFile(selected);
     }
 
     private void writeTasksToFile(File file) {
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(taskList, writer);
         } catch (Exception e) {
-            showError("Save failed", "Could not save file:\n" + e.getMessage());
+            showError("Save failed", e.getMessage());
         }
     }
 
-    // Save to currently selected file, or default to Storage.saveTasks()
     private void saveToCurrentOrDefault() {
-        if (currentFile == null) {
-            // default local storage
+        if (currentFile == null)
             Storage.saveTasks(taskList);
-        } else {
+        else
             writeTasksToFile(currentFile);
-        }
     }
 
-    // ----------------- Export / Print -----------------
-
+    // PDF export
     @FXML
     private void exportPDF() {
-        // Using JavaFX PrinterJob. Many systems allow "Save as PDF" in the dialog.
         PrinterJob job = PrinterJob.createPrinterJob();
-        if (job == null) {
-            showError("Export failed", "No printer job available.");
-            return;
-        }
-        Stage stage = getStage();
-        boolean proceed = job.showPrintDialog(stage);
-        if (!proceed) return;
+        if (job == null) return;
 
-        // Print the TableView node (scaled if necessary)
-        boolean success = job.printPage(taskTable);
-        if (success) {
-            job.endJob();
-        } else {
-            showError("Export failed", "Printing failed.");
+        if (job.showPrintDialog(getStage())) {
+            if (job.printPage(taskTable)) job.endJob();
         }
     }
 
-    // ----------------- About & Details windows -----------------
-
+    // Modals
     @FXML
     private void showAbout() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/about.fxml"));
-            Scene scene = new Scene(loader.load());
-            Stage st = new Stage();
-            st.setTitle("About Us");
-            st.initModality(Modality.APPLICATION_MODAL);
-            st.setScene(scene);
-            st.showAndWait();
-        } catch (Exception e) {
-            showError("Error", "Could not open About window:\n" + e.getMessage());
-        }
+        openModal("/sample/about.fxml", "About");
     }
 
     @FXML
     private void showDetails() {
+        openModal("/sample/details.fxml", "Details");
+    }
+
+    private void openModal(String resource, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/details.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Scene scene = new Scene(loader.load());
+
             Stage st = new Stage();
-            st.setTitle("Details / User Guide");
+            st.setTitle(title);
             st.initModality(Modality.APPLICATION_MODAL);
             st.setScene(scene);
             st.showAndWait();
+
         } catch (Exception e) {
-            showError("Error", "Could not open Details window:\n" + e.getMessage());
+            showError("Error", e.getMessage());
         }
     }
 
-    @FXML
-    private void closeApp() {
-        Stage stage = getStage();
-        if (stage != null) stage.close();
-    }
-
-    // ----------------- Helpers -----------------
-
+    // Helpers
     private Stage getStage() {
-        if (taskTable == null) return null;
-        Scene s = taskTable.getScene();
-        if (s == null) return null;
-        return (Stage) s.getWindow();
+        return (Stage) taskTable.getScene().getWindow();
     }
 
     private void clearForm() {
@@ -352,7 +336,6 @@ public class TodoController {
         a.setTitle(title);
         a.setHeaderText(null);
         a.setContentText(message);
-        a.initOwner(getStage());
         a.showAndWait();
     }
 }

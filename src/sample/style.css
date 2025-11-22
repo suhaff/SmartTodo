@@ -1,0 +1,80 @@
+/* ===============================
+   SMARTTODO MODERN UI THEME
+   =============================== */
+
+/* Global background */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #F7F9FC;
+}
+
+/* MenuBar */
+.menu-bar {
+    -fx-background-color: linear-gradient(to bottom, #e6eef7, #d7e3f0);
+    -fx-padding: 5 10;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #333;
+    -fx-font-size: 13px;
+}
+
+/* TableView styling */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #BFD0E0;
+    -fx-border-radius: 5;
+    -fx-padding: 5;
+}
+
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #cbdced, #b5cbe0);
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a2a2a;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #87BFFF;
+    -fx-text-fill: black;
+}
+
+/* Green if Completed */
+.table-row-cell:filled:focused:selected .text,
+.table-row-cell:filled:selected .text {
+    -fx-font-weight: bold;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 5 10;
+}
+
+.button:hover {
+    -fx-background-color: #3b7fcc;
+}
+
+.button:pressed {
+    -fx-background-color: #2f6bb0;
+}
+
+/* Form Label */
+.label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+}
+
+/* TextField and TextArea */
+.text-field, .text-area, .combo-box, .date-picker {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #AFC3D3;
+    -fx-background-color: #ffffff;
+}
+
+/* Search & Filter Bar */
+.hbox {
+    -fx-background-color: transparent;
+}

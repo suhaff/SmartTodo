@@ -1,0 +1,145 @@
+/* ==============================================
+   LIGHT THEME
+   ============================================== */
+
+/* -------- GLOBAL -------- */
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #222;
+}
+
+.label {
+    -fx-text-fill: #222;
+}
+
+/* -------- MENUBAR -------- */
+.menu-bar {
+    -fx-background-color: #e9e9e9;
+}
+
+.menu, .menu-item, .menu .label, .menu-item .label {
+    -fx-text-fill: #222;
+}
+
+.context-menu {
+    -fx-background-color: white;
+    -fx-text-fill: #222;
+}
+
+/* -------- TABLE + GRID -------- */
+.table-view {
+    -fx-background-color: white;
+    -fx-control-inner-background: white;
+    -fx-control-inner-background-alt: #fafafa;
+    -fx-table-cell-border-color: #d9d9d9;
+    -fx-border-color: #cccccc;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #e6e6e6;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: #e6e6e6;
+    -fx-border-color: #d0d0d0;
+    -fx-text-fill: #333;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #d9d9d9;
+    -fx-text-fill: #222;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #0078ff;
+    -fx-text-fill: white;
+}
+
+/* -------- SCROLLBARS -------- */
+.scroll-bar .thumb {
+    -fx-background-color: #bfbfbf;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #a8a8a8;
+}
+
+/* -------- BUTTONS -------- */
+.button {
+    -fx-background-color: #0078ff;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #0062d6;
+}
+
+.button:pressed {
+    -fx-background-color: #004bb3;
+}
+
+/* -------- INPUTS -------- */
+.text-field, .text-area, .date-picker .text-field {
+    -fx-background-color: white;
+    -fx-text-fill: #222;
+    -fx-border-color: #c8c8c8;
+    -fx-background-radius: 4;
+}
+
+.text-area .content {
+    -fx-background-color: white;
+}
+
+/* -------- COMBOBOX -------- */
+.combo-box, .combo-box-base {
+    -fx-background-color: white;
+    -fx-border-color: #c8c8c8;
+    -fx-text-fill: #222;
+    -fx-background-radius: 4;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #222;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+/* -------- DATE PICKER -------- */
+.date-picker .arrow-button {
+    -fx-background-color: #e6e6e6;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #d0d0d0;
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #f0f0f0;
+}
+
+/* -------- CHECKBOX (iOS style) -------- */
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #0078ff;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-padding: 0.25em;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #0078ff;
+}
+
+.check-box:selected .box {
+    -fx-background-color: white;
+}
